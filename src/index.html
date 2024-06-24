@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>K-drawing-board</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="wrap">
+        <div class="mask bottom-l">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="mask top-r">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="board-top">
+          <div class="name">
+            <div class="display" contenteditable="true">Untitled</div>
+            <i class="icon-edit"></i>
+          </div>
+          <div class="export-btn">
+            <i class="icon-download"></i>
+          </div>
+        </div>
+        <div class="board-left">
+          <div class="tools-bar">
+            <div class="tool-btn" data-tool="select">
+              <i class="icon-select"></i>
+            </div>
+            <div class="tool-btn" data-tool="move">
+              <i class="icon-move"></i>
+            </div>
+            <div class="tool-btn" data-tool="zoom-in">
+              <i class="icon-plus"></i>
+            </div>
+            <div class="tool-btn" data-tool="zoom-out">
+              <i class="icon-minus"></i>
+            </div>
+          </div>
+          <div class="add-board">
+            <div class="board-btn active">
+              <input type="file">
+              <i class="icon-plus"></i>
+            </div>
+            <div class="board-btn">
+              <input type="file">
+              <i class="icon-plus"></i>
+            </div>
+            <div class="board-btn">
+              <input type="file">
+              <i class="icon-plus"></i>
+            </div>
+          </div>
+        </div>
+        <div class="board-bottom">
+          <div class="tools-bar">
+            <div class="tool-btn" data-tool="brush">
+              <i class="icon-brush"></i>
+            </div>
+            <div class="tool-btn" data-tool="text">
+              <i class="icon-text"></i>
+            </div>
+            <div class="tool-btn" data-tool="shape">
+              <i class="icon-shape"></i>
+            </div>
+            <div class="tool-btn" data-tool="line">
+              <i class="icon-line"></i>
+            </div>
+            <div class="tool-btn" data-tool="color"></div>
+            <div class="tool-btn" data-tool="previous">
+              <i class="icon-previous"></i>
+            </div>
+            <div class="tool-btn" data-tool="next">
+              <i class="icon-next"></i>
+            </div>
+          </div>
+        </div>
+        <div class="drawing-board">
+          <div class="inner"></div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./assets/js/main.js"></script>
+  </body>
+</html>
