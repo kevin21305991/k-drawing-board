@@ -1,4 +1,4 @@
-@import '../icomoon/style.css'
+@import '../fonts/icomoon/style.css'
 
 $mainColor: #395886
 $subColor: #F0F3FA
@@ -8,11 +8,16 @@ $subColor2: #628ECB
 *,*::before,*::after
   box-sizing: border-box
 
-i
+i,ul
   display: block
 
+ul
+  margin: 0
+  padding: 0
+  list-style: none
+
 body
-  font-family: "Noto Sans TC", sans-serif
+  font-family: "Poppins", "Noto Sans TC", sans-serif
   display: flex
   align-items: center
   justify-content: center
@@ -21,7 +26,7 @@ body
   background-color: $subColor
   margin: 0
 
-#app
+.artboard-container
   display: flex
   align-items: center
   justify-content: center
@@ -191,6 +196,7 @@ body
   justify-content: center
   gap: 10px
   .tool-btn
+    position: relative
     display: flex
     align-items: center
     justify-content: center
@@ -199,8 +205,8 @@ body
     border-radius: 50%
     background-color: $subColor2
     cursor: pointer
-    &:active
-      background-color: rgba($subColor2,.8)
+    &:active,&.active
+      background-color: rgba($subColor2,.6)
     i
       &[class^="icon-"], &[class*=" icon-"]
         color: $subColor
@@ -245,6 +251,27 @@ body
           width: 100%
           height: 100%
           border: 2px solid var(--color,#000)
+    .more-options
+      position: absolute
+      top: -15px
+      left: 50%
+      transform: translate3d(-50%,-100%,0)
+      background-color: rgba(#8AAEE0,.9)
+      border-radius: 12px
+      visibility: hidden
+      opacity: 0
+      cursor: default
+      &::after
+        content: ''
+        position: absolute
+        bottom: 0
+        left: 50%
+        transform: translate3d(-50%,100%,0)
+        width: 0
+        height: 0
+        border-style: solid
+        border-width: 8px 6px 0 6px
+        border-color: rgba(#8AAEE0,.9) transparent transparent transparent
 
 .name
   display: flex
@@ -280,69 +307,188 @@ body
     color: $subColor2
     font-size: 18px
 
-.add-board
+.paper-radio
   display: flex
   flex-direction: column
   align-items: center
   justify-content: center
   height: 190px
   gap: 10px
-  .board-btn
+  .item
     position: relative
+    display: flex
+    align-items: center
+    justify-content: center
     width: 50px
     height: 50px
     border-radius: 50%
-    border: 2px dashed $subColor
     overflow: hidden
-    &.active
-      border-style: solid
-    &.uploaded
-      label
-        display: none
-      .remove
-        display: block
-      &:hover
-        .remove
+    &.has-background
+      >label
+        color: $subColor !important
+      .img-box
+        &::before
+          background-color: transparent !important
+        &::after
           opacity: 1
-    .remove
-      display: none
+    >label
+      color: $subColor
+      font-size: 18px
+      font-weight: 500
+    >input
       position: absolute
       inset: 0
-      background-color: rgba(0,0,0,.5)
+      margin: 0
       opacity: 0
-      transition: opacity .3s
-      z-index: 1
-    label
+      cursor: pointer
+      &:checked
+        & ~ label
+          color: #000
+        & ~ .img-box
+          &::before
+            border-style: solid
+            background-color: $subColor
+    .img-box
       position: absolute
       inset: 0
-      display: flex
-      align-items: center
-      justify-content: center
       width: 100%
       height: 100%
-      cursor: pointer
-      >input
-        display: none
+      z-index: -1
+      &::before,&::after
+        content: ''
         position: absolute
         inset: 0
+      &::before
+        border-radius: 50%
+        border: 2px dashed $subColor
+        z-index: 2
+      &::after
         opacity: 0
-        cursor: pointer
-      >i
-        color: #fff
-        font-size: 14px
+        background-color: rgba(0,0,0,.6)
+        z-index: 1
 
 .drawing-board
   flex: 1
   padding: 70px 70px 70px 80px
   .inner
-    position: relative
     aspect-ratio: 1/1
     height: 100%
     border-radius: 25px
     box-shadow: inset 0 0 8px 0 rgba(0,0,0,.2)
     overflow: hidden
-    .draw-paper
+  .paper-wrap
+    position: relative
+    width: 100%
+    height: 100%
+    canvas
       position: absolute
       inset: 0
+      &#paper-cursor
+        pointer-events: none
+
+.tab-container
+  &.background-select
+    width: 270px
+  .tab-nav
+    position: relative
+    padding: 6px
+    border-radius: 12px
+    z-index: 0
+    ul
+      display: flex
+      >li
+        flex: 1
+        color: #000
+        text-align: center
+        padding: 10px
+        cursor: pointer
+        transition: color .3s
+        &.active
+          color: $subColor
+    .display-active
+      position: absolute
+      inset: 0
+      padding: 6px
+      z-index: -1
+      &::after
+        content: ''
+        display: block
+        width: 50%
+        height: 100%
+        border-radius: 12px
+        background-color: $mainColor
+        transform: translateX(var(--x,0))
+        transition: transform .5s
+  .tab-content
+    width: 100%
+    .slider-container
+      width: 100%
+      overflow: hidden
+    .slider-wrap
+      display: flex
+      flex-wrap: nowrap
       width: 100%
       height: 100%
+      transform: translateX(calc(-1 * var(--x,0)))
+      transition: transform .5s
+    .tab-panel
+      width: 100%
+      padding: 0 6px 6px
+      flex-shrink: 0
+      &.upload-background
+        .inner
+          display: flex
+          align-items: center
+          justify-content: center
+      &.background-color-select
+        .btn-group
+          justify-content: center
+          margin-top: 10px
+          .btn
+            padding: 5px 20px
+      .inner
+        width: 100%
+        height: 100%
+        padding: 15px
+        color: $subColor
+        border-radius: 12px
+        background-color: $mainColor
+    .btn-group
+      display: flex
+      .btn
+        position: relative
+        padding: 20px
+        transition: opacity .3s
+        cursor: pointer
+        &:hover,&:active
+          opacity: .8
+        &:not(:first-child)
+          &::before
+            content: ''
+            position: absolute
+            top: 50%
+            left: 0
+            transform: translate3d(-50%,-50%,0)
+            width: 2px
+            height: 20px
+            background-color: rgba($subColor,.2)
+        input
+          display: none
+          position: absolute
+          inset: 0
+          opacity: 0
+          z-index: 1
+        i
+          font-size: 30px
+    .cpicker-container
+      width: 100%
+      .color-picker
+        max-width: 100%
+        .range.color-picker__hue
+          output
+            display: none
+        .color-picker__value
+          z-index: 0
+          input
+            &:focus ~ div
+              background: #fff
