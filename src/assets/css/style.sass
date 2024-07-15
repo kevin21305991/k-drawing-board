@@ -211,6 +211,48 @@ body
       &[class^="icon-"], &[class*=" icon-"]
         color: $subColor
         font-size: 18px
+    &[data-tool="brush"],&[data-tool="shape"],&[data-tool="line"]
+      .more-options
+        padding: 20px
+        .btn-group
+          gap: 16px
+    [data-option="brush-size"]
+      position: relative
+      width: 14px
+      height: 14px
+      padding: 0 !important
+      &::before
+        content: ''
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate3d(-50%,-50%,0)
+        border-radius: 50%
+        background-color: $subColor
+      &[value="3"]
+        &::before
+          width: 6px
+          height: 6px
+      &[value="5"]
+        &::before
+          width: 10px
+          height: 10px
+      &[value="10"]
+        &::before
+          width: 14px
+          height: 14px
+    [data-option="shape"]
+      width: 20px
+      height: 20px
+      border: 2px solid $subColor
+      padding: 0 !important
+      &[value="circle"]
+        border-radius: 50%
+    [data-option="line"]
+      padding: 0 !important
+      i
+        font-size: 20px
+
     .color-select
       position: relative
       width: 18px
@@ -272,6 +314,50 @@ body
         border-style: solid
         border-width: 8px 6px 0 6px
         border-color: rgba(#8AAEE0,.9) transparent transparent transparent
+      .btn-group
+        display: flex
+        .btn
+          position: relative
+          padding: 20px
+          transition: opacity .3s
+          cursor: pointer
+          &.radio-btn
+            opacity: .3
+            &:hover,&:active,&.active
+              opacity: 1
+          &:not(.radio-btn)
+            &:hover,&:active
+              opacity: .8
+            &:not(:first-child)
+              &::before
+                content: ''
+                position: absolute
+                top: 50%
+                left: 0
+                transform: translate3d(-50%,-50%,0)
+                width: 2px
+                height: 20px
+                background-color: rgba($subColor,.2)
+          input
+            display: none
+            position: absolute
+            inset: 0
+            opacity: 0
+            z-index: 1
+          .icon-upload,.icon-remove
+            font-size: 30px
+      .cpicker-container
+        width: 100%
+        .color-picker
+          max-width: 100%
+          .range.color-picker__hue
+            output
+              display: none
+          .color-picker__value
+            z-index: 0
+            input
+              &:focus ~ div
+                background: #fff
 
 .name
   display: flex
@@ -453,42 +539,4 @@ body
         color: $subColor
         border-radius: 12px
         background-color: $mainColor
-    .btn-group
-      display: flex
-      .btn
-        position: relative
-        padding: 20px
-        transition: opacity .3s
-        cursor: pointer
-        &:hover,&:active
-          opacity: .8
-        &:not(:first-child)
-          &::before
-            content: ''
-            position: absolute
-            top: 50%
-            left: 0
-            transform: translate3d(-50%,-50%,0)
-            width: 2px
-            height: 20px
-            background-color: rgba($subColor,.2)
-        input
-          display: none
-          position: absolute
-          inset: 0
-          opacity: 0
-          z-index: 1
-        i
-          font-size: 30px
-    .cpicker-container
-      width: 100%
-      .color-picker
-        max-width: 100%
-        .range.color-picker__hue
-          output
-            display: none
-        .color-picker__value
-          z-index: 0
-          input
-            &:focus ~ div
-              background: #fff
+    

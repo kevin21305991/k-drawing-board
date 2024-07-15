@@ -35,6 +35,9 @@
         </div>
         <div class="board-right">
           <div class="tools-bar">
+            <div class="tool-btn" data-tool="clear">
+              <i class="icon-clear"></i>
+            </div>
             <div class="tool-btn" data-tool="previous">
               <i class="icon-previous"></i>
             </div>
@@ -66,7 +69,7 @@
                                 <input class="upload-input" type="file">
                                 <i class="icon-upload"></i>
                               </label>
-                              <div class="btn clear-bgimage-btn">
+                              <div class="btn option-btn" data-option="clear-bgimage">
                                 <i class="icon-remove"></i>
                               </div>
                             </div>
@@ -76,8 +79,8 @@
                           <div class="inner">
                             <div class="cpicker-container"></div>
                             <div class="btn-group">
-                              <div class="btn clear-bgcolor-btn">Clear</div>
-                              <div class="btn apply-bgcolor-btn">Apply</div>
+                              <div class="btn option-btn" data-option="clear-bgcolor">Clear</div>
+                              <div class="btn option-btn" data-option="apply-bgcolor">Apply</div>
                             </div>
                           </div>
                         </div>
@@ -89,16 +92,38 @@
             </div>
             <div class="tool-btn" data-tool="brush">
               <i class="icon-brush"></i>
-              <div class="more-options"></div>
+              <div class="more-options">
+                <div class="btn-group">
+                  <div class="btn option-btn radio-btn" data-option="brush-size" value="10"></div>
+                  <div class="btn option-btn radio-btn active" data-option="brush-size" value="5"></div>
+                  <div class="btn option-btn radio-btn" data-option="brush-size" value="3"></div>
+                </div>
+              </div>
             </div>
             <div class="tool-btn" data-tool="text">
               <i class="icon-text"></i>
             </div>
             <div class="tool-btn" data-tool="shape">
               <i class="icon-shape"></i>
+              <div class="more-options">
+                <div class="btn-group">
+                  <div class="btn option-btn radio-btn active" data-option="shape" value="circle"></div>
+                  <div class="btn option-btn radio-btn" data-option="shape" value="rect"></div>
+                </div>
+              </div>
             </div>
             <div class="tool-btn" data-tool="line">
               <i class="icon-line"></i>
+              <div class="more-options">
+                <div class="btn-group">
+                  <div class="btn option-btn radio-btn active" data-option="line" value="straight-line">
+                    <i class="icon-line"></i>
+                  </div>
+                  <div class="btn option-btn radio-btn" data-option="line" value="arrow">
+                    <i class="icon-arrow"></i>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="tool-btn" data-tool="color">
               <i class="color-select">

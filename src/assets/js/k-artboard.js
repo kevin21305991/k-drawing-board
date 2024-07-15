@@ -23,9 +23,7 @@ class KArtboard {
     this.nameDisplay = this.element.querySelector('.name .display');
     this.editBtn = this.element.querySelector('.edit-btn');
     this.uploadInput = this.element.querySelector('.upload-input');
-    this.clearBGImageBtn = this.element.querySelector('.clear-bgimage-btn');
-    this.clearBGColorBtn = this.element.querySelector('.clear-bgcolor-btn');
-    this.applyBGColorBtn = this.element.querySelector('.apply-bgcolor-btn');
+    this.allOptionBtn = this.element.querySelectorAll('.option-btn');
     this.allPaperRadio = this.element.querySelectorAll('.paper-radio input[type="radio"]');
     this.allTabBtn = this.element.querySelectorAll('.tab-nav ul > li');
     this.boardData = [
@@ -207,7 +205,7 @@ class KArtboard {
             addPaperBackground(e.target.result);
             paperItem.classList.add('has-background');
             paperItem.querySelector('.img-box').style.background = `url('${e.target.result}') no-repeat center/cover`;
-            this.#closeMoreOptions();
+            this.#closeMoreOptions(true);
             _URL.revokeObjectURL(objectUrl);
           };
           img.src = objectUrl;
@@ -220,19 +218,21 @@ class KArtboard {
      * 套用背景色
      */
     const applyBackgroundColor = () => {
-      const color = this.bgColorPicker.CSSColor;
-      const paperItem = this.element.querySelectorAll('.paper-radio .item')[this.activePaperIndex];
-      this.paperCanvas.setBackgroundImage(null, this.paperCanvas.renderAll.bind(this.paperCanvas));
-      this.paperCanvas.setBackgroundColor(color, this.paperCanvas.renderAll.bind(this.paperCanvas));
-      paperItem.classList.add('has-background');
-      paperItem.querySelector('.img-box').style.background = color;
-      this.boardData[this.activePaperIndex] = { ...this.boardData[this.activePaperIndex], ...this.paperCanvas.toJSON() };
-      this.#closeMoreOptions();
-      console.log(this.boardData);
+      if (parseInt(this.bgColorPicker.color.a) !== 0) {
+        const color = this.bgColorPicker.CSSColor;
+        const paperItem = this.element.querySelectorAll('.paper-radio .item')[this.activePaperIndex];
+        this.paperCanvas.setBackgroundImage(null, this.paperCanvas.renderAll.bind(this.paperCanvas));
+        this.paperCanvas.setBackgroundColor(color, this.paperCanvas.renderAll.bind(this.paperCanvas));
+        paperItem.classList.add('has-background');
+        paperItem.querySelector('.img-box').style.background = color;
+        this.boardData[this.activePaperIndex] = { ...this.boardData[this.activePaperIndex], ...this.paperCanvas.toJSON() };
+        console.log(this.boardData);
+      }
+      this.#closeMoreOptions(true);
     };
 
     /**
-     * 移除背景圖
+     * 移除背景
      */
     const clearBackground = () => {
       const paperItem = this.element.querySelectorAll('.paper-radio .item')[this.activePaperIndex];
@@ -241,12 +241,12 @@ class KArtboard {
       this.bgColorPicker.setColor('rgba(255,255,255,0)');
       paperItem.classList.remove('has-background');
       paperItem.querySelector('.img-box').style.background = '';
-      this.#closeMoreOptions();
+      this.#closeMoreOptions(true);
     };
 
     /**
      *
-     * @param {*} e 點擊事件
+     * @param {*} e 事件本身
      * @returns
      */
     const boardClickHandler = e => {
@@ -257,7 +257,10 @@ class KArtboard {
           break;
         }
       }
-      if (!isTarget) return;
+      if (!isTarget) {
+        this.#closeMoreOptions(true);
+        return;
+      }
       const toolBtn = e.target.closest('.tool-btn[data-tool]');
       const tool = e.target.closest('[data-tool]').getAttribute('data-tool');
       const hasMoreOptions = toolBtn.querySelector('.more-options');
@@ -266,22 +269,28 @@ class KArtboard {
           btn.classList.remove('active');
         }
       });
-      if (hasMoreOptions || tool === 'select' || tool === 'text') {
-        toolBtn.classList.toggle('active');
-        if (hasMoreOptions) {
-          if (toolBtn.classList.contains('active')) {
+      this.#closeMoreOptions();
+      if (hasMoreOptions || tool === 'select' || tool === 'move' || tool === 'text') {
+        const isActive = toolBtn.classList.contains('active');
+        if (isActive) {
+          toolBtn.classList.remove('active');
+        } else {
+          toolBtn.classList.add('active');
+          if (hasMoreOptions) {
             gsap.to(hasMoreOptions, {
               duration: 0.3,
               visibility: 'visible',
               opacity: 1,
             });
-          } else {
-            this.#closeMoreOptions();
           }
         }
       }
     };
 
+    /**
+     * 工具選項頁籤
+     * @param {*} e 事件本身
+     */
     const tabChangeHandler = e => {
       const tabContainer = e.target.closest('.tab-container');
       const tabNav = e.target.closest('.tab-nav');
@@ -294,20 +303,58 @@ class KArtboard {
       e.target.classList.add('active');
     };
 
+    /**
+     * 更換筆刷大小
+     * @param {number} size
+     */
+    const changeBrushSize = size => {
+      console.log(size);
+    };
+
+    /**
+     * 工具選項點擊
+     * @param {*} e 事件本身
+     */
+    const toolOptionClickHandler = e => {
+      const targetBtn = e.target.closest('[data-option]');
+      const option = targetBtn.getAttribute('data-option');
+      if (targetBtn.classList.contains('radio-btn')) {
+        const parentGroup = targetBtn.closest('.btn-group');
+        parentGroup.querySelectorAll('.radio-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        targetBtn.classList.add('active');
+      }
+      console.log(option);
+      switch (option) {
+        case 'clear-bgimage':
+        case 'clear-bgcolor':
+          clearBackground();
+          break;
+        case 'apply-bgcolor':
+          applyBackgroundColor();
+          break;
+        case 'brush-size':
+          const size = parseInt(targetBtn.getAttribute('value'));
+          changeBrushSize(size);
+          break;
+      }
+    };
+
     this.nameDisplay.addEventListener('input', debounce(editBoardName));
     this.editBtn.addEventListener('click', focusBoardName);
     this.allPaperRadio.forEach(input => {
       input.addEventListener('change', changePaper);
     });
     this.element.addEventListener('click', boardClickHandler);
+    this.allOptionBtn.forEach(btn => {
+      btn.addEventListener('click', toolOptionClickHandler);
+    });
     this.uploadInput.addEventListener('change', imageUpload);
-    this.clearBGImageBtn.addEventListener('click', clearBackground);
-    this.clearBGColorBtn.addEventListener('click', clearBackground);
-    this.applyBGColorBtn.addEventListener('click', applyBackgroundColor);
     this.allTabBtn.forEach(tabBtn => {
       tabBtn.addEventListener('click', tabChangeHandler);
     });
-    document.querySelectorAll('.more-options').forEach(element => {
+    this.element.querySelectorAll('.more-options').forEach(element => {
       element.addEventListener('click', e => e.stopPropagation());
     });
   }
@@ -315,15 +362,20 @@ class KArtboard {
   /**
    * 關閉更多選項
    */
-  #closeMoreOptions() {
+  #closeMoreOptions(closeAll) {
+    if (closeAll) {
+      this.allToolBtn.forEach(btn => {
+        btn.classList.remove('active');
+      });
+    }
     gsap.to('.more-options', {
       duration: 0.3,
       opacity: 0,
       onComplete: function () {
         const target = this.targets()[0];
-        const toolBtn = target.closest('.tool-btn');
-        target.style.visibility = 'hidden';
-        toolBtn.classList.remove('active');
+        document.querySelectorAll('.more-options').forEach(element => {
+          element.style.visibility = 'hidden';
+        });
       },
     });
   }
